@@ -64,12 +64,11 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               _isTouched = true;
                             });
-                            await Future.delayed(const Duration(seconds: 1))
-                                .then((value) {
-                              Navigator.pushNamed(context, MyRoutes.homeRoute);
-                              // setState(() {
-                              //   _isTouched = false;
-                              // });
+                            await Future.delayed(const Duration(seconds: 1));
+                            await Navigator.pushNamed(
+                                context, MyRoutes.homeRoute);
+                            setState(() {
+                              _isTouched = false;
                             });
                           },
                           child: AnimatedContainer(
