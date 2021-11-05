@@ -12,6 +12,20 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isTouched = false;
+  final _formKey = GlobalKey<FormState>();
+
+  moveToHome(context) async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isTouched = true;
+      });
+      await Future.delayed(const Duration(seconds: 1));
+      await Navigator.pushNamed(context, MyRoutes.homeRoute);
+      setState(() {
+        _isTouched = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
               child: Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     const Text(
@@ -47,54 +62,57 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _usernameController,
                       decoration: const InputDecoration(
                           labelText: "Enter Username", hintText: "Username"),
+                      validator: (value) {
+                        if (value != null && value.isEmpty) {
+                          return "Username can't be null";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 20.0),
                     TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                          labelText: "Enter Password", hintText: "Password"),
-                      obscureText: true,
-                    ),
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                            labelText: "Enter Password", hintText: "Password"),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            return "Password can't be empty";
+                          } else if (value != null && value.length < 5) {
+                            return "Password length should be greater than 6 characters";
+                          }
+                          return null;
+                        }),
                     const SizedBox(height: 40.0),
                     Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 15.0, horizontal: 30.0),
-                        child: InkWell(
-                          onTap: () async {
-                            setState(() {
-                              _isTouched = true;
-                            });
-                            await Future.delayed(const Duration(seconds: 1));
-                            await Navigator.pushNamed(
-                                context, MyRoutes.homeRoute);
-                            setState(() {
-                              _isTouched = false;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(seconds: 1),
-                            width: _isTouched ? 50 : 150,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurpleAccent,
-                              borderRadius: _isTouched
-                                  ? BorderRadius.circular(25.0)
-                                  : BorderRadius.circular(8.0),
-                            ),
-                            alignment: Alignment.center,
-                            child: _isTouched
-                                ? const Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                  )
-                                : const Text(
-                                    "Login",
-                                    style: TextStyle(
+                        child: Material(
+                          color: Colors.deepPurpleAccent,
+                          borderRadius: _isTouched
+                              ? BorderRadius.circular(25.0)
+                              : BorderRadius.circular(8.0),
+                          child: InkWell(
+                            onTap: () => moveToHome(context),
+                            child: AnimatedContainer(
+                              duration: const Duration(seconds: 1),
+                              width: _isTouched ? 50 : 150,
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: _isTouched
+                                  ? const Icon(
+                                      Icons.done,
                                       color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
+                                    )
+                                  : const Text(
+                                      "Login",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                            ),
                           ),
                         )
                         // ElevatedButton(
