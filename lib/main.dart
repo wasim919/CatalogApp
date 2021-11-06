@@ -14,6 +14,7 @@ void main() {
           fontFamily: GoogleFonts.lato().fontFamily,
         ),
         darkTheme: ThemeData(brightness: Brightness.dark),
+        initialRoute: MyRoutes.homeRoute,
         routes: {
           "/": (context) => const LoginPage(),
           MyRoutes.homeRoute: (context) => const HomePage(),
